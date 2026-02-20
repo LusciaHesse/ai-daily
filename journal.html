@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI早报 2026-02-19 | 前沿科技资讯</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', 'Noto Sans SC', sans-serif;
+            background: #0a0a0a;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        /* 动态背景 */
+        .gradient-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 119, 198, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(99, 102, 241, 0.2) 0%, transparent 50%);
+            filter: blur(80px);
+            animation: bgMove 20s ease-in-out infinite;
+        }
+
+        @keyframes bgMove {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -30px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+        }
+
+        /* 粒子效果 */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: float 10s infinite linear;
+        }
+
+        @keyframes float {
+            from { transform: translateY(100vh) translateX(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            to { transform: translateY(-10vh) translateX(100px); opacity: 0; }
+        }
+
+        /* 玻璃拟态 */
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .glass-strong {
+            background: rgba(20, 20, 20, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* 文字渐变 */
+        .text-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .text-gradient-2 {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .text-gradient-3 {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* 卡片悬停效果 */
+        .news-card {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .news-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.7s;
+        }
+
+        .news-card:hover::before {
+            left: 100%;
+        }
+
+        .news-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.1);
+        }
+
+        /* 标签样式 */
+        .tag {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .tag::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.2), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+        }
+
+        .tag:hover::after {
+            transform: translateX(100%);
+        }
+
+        /* 滚动条 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        /* 链接下划线动画 */
+        .link-hover {
+            position: relative;
+            display: inline-block;
+        }
+
+        .link-hover::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: currentColor;
+            transform: scaleX(0);
+            transform-origin: bottom right;
+            transition: transform 0.3s;
+        }
+
+        .link-hover:hover::after {
+            transform: scaleX(1);
+            transform-origin: bottom left;
+        }
+
+        /* 打字机效果 */
+        .typewriter {
+            overflow: hidden;
+            border-right: 3px solid rgba(255,255,255,0.75);
+            white-space: nowrap;
+            animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+        }
+
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: rgba(255,255,255,0.75); }
+        }
+
+        /* 霓虹发光 */
+        .glow {
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+        }
+
+        /* 图片悬停缩放 */
+        .img-zoom {
+            overflow: hidden;
+        }
+
+        .img-zoom img {
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .img-zoom:hover img {
+            transform: scale(1.1);
+        }
+
+        /* 移动端优化 */
+        @media (max-width: 768px) {
+            .typewriter {
+                white-space: normal;
+                border: none;
+                animation: none;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- 动态背景 -->
+    <div class="gradient-bg"></div>
+    <div class="particles" id="particles"></div>
+
+    <!-- 导航栏 -->
+    <nav class="fixed top-0 w-full z-50 glass-strong border-b border-white/10 transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center font-bold text-white">AI</div>
+                    <span class="font-bold text-xl tracking-tight">TechDaily</span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#overview" class="text-sm font-medium hover:text-purple-400 transition-colors">概览</a>
+                    <a href="#models" class="text-sm font-medium hover:text-purple-400 transition-colors">模型发布</a>
+                    <a href="#ecosystem" class="text-sm font-medium hover:text-purple-400 transition-colors">开发生态</a>
+                    <a href="#industry" class="text-sm font-medium hover:text-purple-400 transition-colors">行业动态</a>
+                </div>
+                <div class="text-sm font-mono text-gray-400" id="clock">2026-02-19</div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="relative min-h-screen flex items-center justify-center px-4 overflow-hidden">
+        <div class="text-center z-10 max-w-5xl mx-auto">
+            <div class="mb-6 inline-block">
+                <span class="px-4 py-2 rounded-full glass text-sm font-medium text-purple-300 border border-purple-500/30 animate-pulse">
+                    🚀 今日更新 12 条前沿资讯
+                </span>
+            </div>
+            <h1 class="text-6xl md:text-8xl font-black mb-6 leading-tight">
+                <span class="block text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 animate-gradient">
+                    AI 早报
+                </span>
+                <span class="block text-2xl md:text-4xl font-light mt-4 text-gray-300 typewriter">
+                    2026.02.19
+                </span>
+            </h1>
+            <p class="text-xl md:text-2xl text-gray-400 max-w-2xl mx-auto mb-12 leading-relaxed">
+                探索人工智能的最新边界，从 <span class="text-gradient font-semibold">DeepMind</span> 的音乐生成到 <span class="text-gradient-2 font-semibold">xAI</span> 的多智能体协作
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <button onclick="scrollToContent()" class="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full font-semibold text-lg hover:scale-105 transition-transform shadow-lg hover:shadow-purple-500/50 flex items-center gap-2 group">
+                    开始阅读
+                    <svg class="w-5 h-5 group-hover:translate-y-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                    </svg>
+                </button>
+                <button onclick="toggleTheme()" class="px-8 py-4 glass rounded-full font-semibold text-lg hover:bg-white/10 transition-all border border-white/20">
+                    切换视图
+                </button>
+            </div>
+        </div>
+        
+        <!-- 装饰性元素 -->
+        <div class="absolute top-1/4 left-10 w-32 h-32 bg-purple-500/20 rounded-full blur-3xl animate-pulse"></div>
+        <div class="absolute bottom-1/4 right-10 w-40 h-40 bg-pink-500/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+    </header>
+
+    <!-- 概览 Section -->
+    <section id="overview" class="py-20 px-4">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16">
+                <div class="glass rounded-2xl p-6 text-center hover:border-purple-500/50 transition-colors cursor-pointer group">
+                    <div class="text-3xl font-bold text-gradient mb-2 group-hover:scale-110 transition-transform">4</div>
+                    <div class="text-sm text-gray-400">模型发布</div>
+                </div>
+                <div class="glass rounded-2xl p-6 text-center hover:border-blue-500/50 transition-colors cursor-pointer group">
+                    <div class="text-3xl font-bold text-gradient-3 mb-2 group-hover:scale-110 transition-transform">4</div>
+                    <div class="text-sm text-gray-400">开发生态</div>
+                </div>
+                <div class="glass rounded-2xl p-6 text-center hover:border-pink-500/50 transition-colors cursor-pointer group">
+                    <div class="text-3xl font-bold text-gradient-2 mb-2 group-hover:scale-110 transition-transform">3</div>
+                    <div class="text-sm text-gray-400">行业动态</div>
+                </div>
+                <div class="glass rounded-2xl p-6 text-center hover:border-green-500/50 transition-colors cursor-pointer group">
+                    <div class="text-3xl font-bold text-green-400 mb-2 group-hover:scale-110 transition-transform">1</div>
+                    <div class="text-sm text-gray-400">技术洞察</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 模型发布 Section -->
+    <section id="models" class="py-20 px-4 relative">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex items-center mb-12">
+                <div class="h-8 w-1 bg-gradient-to-b from-purple-500 to-pink-500 rounded-full mr-4"></div>
+                <h2 class="text-4xl font-bold">模型发布</h2>
+                <span class="ml-4 px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 text-sm border border-purple-500/30">Model Releases</span>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Lyria 3 -->
+                <article class="news-card glass rounded-3xl p-8 group">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="tag px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 text-xs font-semibold border border-blue-500/30">#1</span>
+                        <span class="text-xs text-gray-500">Google DeepMind</span>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3 group-hover:text-blue-400 transition-colors">Lyria 3 音乐生成模型</h3>
+                    <p class="text-gray-400 mb-6 leading-relaxed">
+                        已在 Gemini 桌面端开启测试。支持文本、图片、视频转音乐，生成 30 秒带歌词的高保真音乐，嵌入 SynthID 水印确保可追溯性。
+                    </p>
+                    <div class="flex flex-wrap gap-2 mb-6">
+                        <span class="px-2 py-1 rounded bg-white/5 text-xs text-gray-300">文本转音轨</span>
+                        <span class="px-2 py-1 rounded bg-white/5 text-xs text-gray-300">图像/视频转音轨</span>
+                        <span class="px-2 py-1 rounded bg-white/5 text-xs text-gray-300">8种语言支持</span>
+                    </div>
+                    <div class="flex items-center justify-between pt-4 border-t border-white/10">
+                        <div class="flex -space-x-2">
+                            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-xs font-bold">G</div>
+                            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center text-xs font-bold">D</div>
+                        </div>
+                        <a href="https://deepmind.google/models/lyria/" target="_blank" class="text-sm text-blue-400 hover:text-blue-300 flex items-center gap-1 link-hover">
+                            了解更多 
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                        </a>
+                    </div>
+                </article>
+
+                <!-- Grok 4.20 -->
+                <article class="news-card glass rounded-3xl p-8 group">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="tag px-3 py-1 rounded-full bg-orange-500/20 text-orange-300 text-xs font-semibold border border-orange-500/30">#2</span>
+                        <span class="text-xs text-gray-500">xAI</span>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3 group-hover:text-orange-400 transition-colors">Grok 4.20 Heavy</h3>
+                    <p class="text-gray-400 mb-6 leading-relaxed">
+                        采用16个专门化 Agent 组成的协作团队架构（16-Agent协作模式），实现实时协作处理复杂任务，向 Heavy 订阅用户开放。
+                    </p>
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="flex items-center gap-2">
+                            <div class="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></div>
+                            <span class="text-sm text-gray-300">16 Agents 实时协作</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between pt-4 border-t border-white/10">
+                        <span class="text-xs text-gray-500">via Elon Musk</span>
+                        <a href="https://x.com/elonmusk/status/2024194618930401590" target="_blank" class="text-sm text-orange-400 hover:text-orange-300 flex items-center gap-1 link-hover">
+                            查看推文
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                        </a>
+                    </div>
+                </article>
+
+                <!-- Prime Intellect -->
+                <article class="news-card glass rounded-3xl p-8 group">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="tag px-3 py-1 rounded-full bg-green-500/20 text-green-300 text-xs font-semibold border border-green-500/30">#3</span>
+                        <span class="text-xs text-gray-500">Prime Intellect</span>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3 group-hover:text-green-400 transition-colors">INTELLECT-3.1 开源模型</h3>
+                    <p class="text-gray-400 mb-6 leading-relaxed">
+                        基于 GLM-4.5-Air-Base 训练的 106B 参数 MoE 模型，活跃参数 12B。通过强化学习显著提升数学、编程及 Agent 任务表现。
+                    </p>
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div class="glass rounded-lg p-3 text-center">
+                            <div class="text-lg font-bold text-green-400">106B</div>
+                            <div class="text-xs text-gray-500">总参数</div>
+                        </div>
+                        <div class="glass rounded-lg p-3 text-center">
+                            <div class="text-lg font-bold text-green-400">MIT</div>
+                            <div class="text-xs text-gray-500">开源协议</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between pt-4 border-t border-white/10">
+                        <span class="text-xs text-gray-500">Open Source</span>
+                        <a href="https://huggingface.co/PrimeIntellect/INTELLECT-3.1" target="_blank" class="text-sm text-green-400 hover:text-green-300 flex items-center gap-1 link-hover">
+                            HuggingFace
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                        </a>
+                    </div>
+                </article>
+
+                <!-- Sarvam -->
+                <article class="news-card glass rounded-3xl p-8 group">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="tag px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-xs font-semibold border border-indigo-500/30">#4</span>
+                        <span class="text-xs text-gray-500">Sarvam (印度)</span>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3 group-hover:text-indigo-400 transition-colors">Sarvam-30B & 105B</h3>
+                    <p class="text-gray-400 mb-6 leading-relaxed">
+                        印度初创公司发布的从零训练 MoE 模型，针对印度本土语言优化。30B 模型支持 32k 上下文，105B 模型支持 128k 上下文，专攻复杂推理。
+                    </p>
+                    <div class="flex gap-2 mb-6">
+                        <div class="flex-1 glass rounded-lg p-3 text-center border border-indigo-500/30">
+                            <div class="text-sm font-bold text-indigo-400">Sarvam-30B</div>
+                            <div class="text-xs text-gray-500">16T Tokens</div>
+                        </div>
+                        <div class="flex-1 glass rounded-lg p-3 text-center border border-indigo-500/30">
+                            <div class="text-sm font-bold text-indigo-400">Sarvam-105B</div>
+                            <div class="text-xs text-gray-500">128k 上下文</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between pt-4 border-t border-white/10">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                            <span class="text-xs text-gray-400">政府 & Nvidia 支持</span>
+                        </div>
+                        <span class="text-xs text-indigo-400">计划开源</span>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- 开发生态 Section -->
+    <section id="ecosystem" class="py-20 px-4 relative">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex items-center mb-12">
+                <div class="h-8 w-1 bg-gradient-to-b from-blue-500 to-cyan-500 rounded-full mr-4"></div>
+                <h2 class="text-4xl font-bold">开发生态</h2>
+                <span class="ml-4 px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 text-sm border border-blue-500/30">Developer Ecosystem</span>
+            </div>
+
+            <div class="space-y-6">
+                <!-- OpenAI Codex -->
+                <div class="news-card glass rounded-3xl p-8 md:p-10 flex flex-col md:flex-row gap-8 items-start group">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="tag px-3 py-1 rounded-full bg-green-500/20 text-green-300 text-xs font-semibold border border-green-500/30">#5</span>
+                            <span class="text-sm text-gray-400">OpenAI</span>
+                        </div>
+                        <h3 class="text-3xl font-bold mb-4 group-hover:text-green-400 transition-colors">Codex App Server 开源</h3>
+                        <p class="text-gray-400 mb-6 text-lg leading-relaxed">
+                            支持通过 ChatGPT 账号 OAuth 直接接入第三方应用，提供身份验证、会话历史、审批流和流式 Agent 事件等完整功能。采用 JSON-RPC 2.0 进行双向通信。
+                        </p>
+                        <div class="flex flex-wrap gap-3">
+                            <span class="px-3 py-1 rounded-full bg-white/5 text-sm border border-white/10">ChatGPT OAuth</span>
+                            <span class="px-3 py-1 rounded-full bg-white/5 text-sm border border-white/10">VS Code 扩展</span>
+                            <span class="px-3 py-1 rounded-full bg-white/5 text-sm border border-white/10">JSON-RPC 2.0</span>
+                        </div>
+                    </div>
+                    <div class="md:w-1/3 w-full">
+                        <div class="glass rounded-2xl p-6 border border-green-500/20">
+                            <div class="text-sm text-gray-400 mb-2">GitHub Repository</div>
+                            <a href="https://github.com/openai/codex" target="_blank" class="text-green-400 hover:text-green-300 font-mono text-sm break-all link-hover">
+                                openai/codex
+                            </a>
+                            <div class="mt-4 flex items-center gap-2 text-xs text-gray-500">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                                <span>Developer Tools</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Figma Claude -->
+                <div class="news-card glass rounded-3xl p-8 md:p-10 flex flex-col md:flex-row gap-8 items-start group">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="tag px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 text-xs font-semibold border border-purple-500/30">#6</span>
+                            <span class="text-sm text-gray-400">Figma × Claude</span>
+                        </div>
+                        <h3 class="text-3xl font-bold mb-4 group-hover:text-purple-400 transition-colors">Claude Code to Figma</h3>
+                        <p class="text-gray-400 mb-6 text-lg leading-relaxed">
+                            通过 Figma MCP Server，将 Claude Code 生成的 UI 直接转化为 Figma 画布上可编辑的 Frame。实现从"代码收敛"到"画布发散"的高效转换，支持完整流程捕捉和上下文保留。
+                        </p>
+                        <div class="flex items-center gap-4 text-sm text-gray-300">
+                            <div class="flex items-center gap-2">
+                                <div class="w-2 h-2 rounded-full bg-purple-500"></div>
+                                <span>双向工作流</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div class="w-2 h-2 rounded-full bg-purple-500"></div>
+                                <span>实时同步</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="md:w-1/3 w-full img-zoom rounded-2xl overflow-hidden">
+                        <div class="aspect-video bg-gradient-to-br from-purple-900/50 to-pink-900/50 flex items-center justify-center">
+                            <div class="text-6xl">🎨</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 其他生态新闻网格 -->
+                <div class="grid md:grid-cols-2 gap-6">
+                    <article class="news-card glass rounded-2xl p-6 group">
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="tag px-3 py-1 rounded-full bg-red-500/20 text-red-300 text-xs font-semibold border border-red-500/30">#7</span>
+                            <span class="text-xs text-gray-500">OpenAI</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2 group-hover:text-red-400 transition-colors">EVMbench 智能合约安全基准</h3>
+                        <p class="text-gray-400 text-sm">发布智能合约安全基准，用于评估 AI 在区块链安全领域的能力。</p>
+                    </article>
+
+                    <article class="news-card glass rounded-2xl p-6 group">
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="tag px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 text-xs font-semibold border border-blue-500/30">#8</span>
+                            <span class="text-xs text-gray-500">Google</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2 group-hover:text-blue-400 transition-colors">Gemini CLI v0.29.0</h3>
+                        <p class="text-gray-400 text-sm">推出每周更新版本，持续优化命令行交互体验。</p>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 行业动态 Section -->
+    <section id="industry" class="py-20 px-4 relative">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex items-center mb-12">
+                <div class="h-8 w-1 bg-gradient-to-b from-pink-500 to-orange-500 rounded-full mr-4"></div>
+                <h2 class="text-4xl font-bold">行业动态</h2>
+                <span class="ml-4 px-3 py-1 rounded-full bg-pink-500/20 text-pink-300 text-sm border border-pink-500/30">Industry News</span>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="news-card glass rounded-2xl p-6 group hover:scale-105 transition-transform">
+                    <div class="text-4xl mb-4">🇮🇳</div>
+                    <h3 class="text-lg font-bold mb-2">印度 AI 计划</h3>
+                    <p class="text-sm text-gray-400 mb-4">谷歌、OpenAI 和微软宣布在印度的重大投资与发展计划</p>
+                    <span class="text-xs text-pink-400">#9</span>
+                </div>
+
+                <div class="news-card glass rounded-2xl p-6 group hover:scale-105 transition-transform">
+                    <div class="text-4xl mb-4">🔍</div>
+                    <h3 class="text-lg font-bold mb-2">Perplexity 调整</h3>
+                    <p class="text-sm text-gray-400 mb-4">撤下搜索平台广告，专注优化搜索体验</p>
+                    <span class="text-xs text-pink-400">#10</span>
+                </div>
+
+                <div class="news-card glass rounded-2xl p-6 group hover:scale-105 transition-transform">
+                    <div class="text-4xl mb-4">🌐</div>
+                    <h3 class="text-lg font-bold mb-2">World Labs 合作</h3>
+                    <p class="text-sm text-gray-400 mb-4">完成新一轮融资并与 Autodesk 达成战略合作</p>
+                    <span class="text-xs text-pink-400">#11</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 技术洞察 Section -->
+    <section class="py-20 px-4 relative mb-20">
+        <div class="max-w-4xl mx-auto">
+            <div class="glass rounded-3xl p-10 border border-yellow-500/20 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-yellow-500/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
+                
+                <div class="relative z-10">
+                    <div class="flex items-center gap-3 mb-6">
+                        <span class="px-3 py-1 rounded-full bg-yellow-500/20 text-yellow-300 text-xs font-semibold border border-yellow-500/30">#12</span>
+                        <span class="text-sm text-gray-400">智谱 AI</span>
+                    </div>
+                    
+                    <h2 class="text-3xl md:text-4xl font-bold mb-6">GLM-5 技术报告发布</h2>
+                    
+                    <p class="text-lg text-gray-300 leading-relaxed mb-8">
+                        智谱 AI 发布 GLM-5 技术报告，详细阐述了新一代大语言模型的架构设计、训练方法和性能评估。报告揭示了在中文理解、多模态融合和 Agent 能力方面的重大突破。
+                    </p>
+
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div class="glass rounded-xl p-4 text-center">
+                            <div class="text-2xl font-bold text-yellow-400 mb-1">架构</div>
+                            <div class="text-xs text-gray-400">新一代 MoE 设计</div>
+                        </div>
+                        <div class="glass rounded-xl p-4 text-center">
+                            <div class="text-2xl font-bold text-yellow-400 mb-1">多模态</div>
+                            <div class="text-xs text-gray-400">文本图像视频统一</div>
+                        </div>
+                        <div class="glass rounded-xl p-4 text-center">
+                            <div class="text-2xl font-bold text-yellow-400 mb-1">Agent</div>
+                            <div class="text-xs text-gray-400">自主任务执行</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/10 py-12 px-4">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center font-bold text-white">AI</div>
+                <span class="font-bold text-xl">TechDaily</span>
+            </div>
+            
+            <div class="flex gap-8 text-sm text-gray-400">
+                <a href="#" class="hover:text-white transition-colors link-hover">关于我们</a>
+                <a href="#" class="hover:text-white transition-colors link-hover">投稿</a>
+                <a href="#" class="hover:text-white transition-colors link-hover">订阅</a>
+                <a href="#" class="hover:text-white transition-colors link-hover">联系方式</a>
+            </div>
+
+            <div class="text-sm text-gray-500">
+                © 2026 AI早报 · 每日前沿科技资讯
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 初始化 GSAP
+        gsap.registerPlugin(ScrollTrigger);
+
+        // 生成背景粒子
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 10 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                container.appendChild(particle);
+            }
+        }
+        createParticles();
+
+        // 滚动动画
+        gsap.utils.toArray('.news-card').forEach((card, i) => {
+            gsap.from(card, {
+                scrollTrigger: {
+                    trigger: card,
+                    start: 'top 85%',
+                    toggleActions: 'play none none reverse'
+                },
+                y: 50,
+                opacity: 0,
+                duration: 0.6,
+                delay: i % 2 * 0.1,
+                ease: 'power2.out'
+            });
+        });
+
+        // 导航栏滚动效果
+        let lastScroll = 0;
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            const currentScroll = window.pageYOffset;
+            
+            if (currentScroll > 100) {
+                navbar.classList.add('glass-strong');
+                navbar.classList.remove('border-transparent');
+            } else {
+                navbar.classList.remove('glass-strong');
+            }
+            
+            lastScroll = currentScroll;
+        });
+
+        // 平滑滚动
+        function scrollToContent() {
+            document.getElementById('overview').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // 主题切换（简化版）
+        let darkMode = true;
+        function toggleTheme() {
+            // 这里可以添加主题切换逻辑
+            alert('主题切换功能已触发 - 在实际应用中这里会切换深色/浅色模式');
+        }
+
+        // 实时时钟
+        function updateClock() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('zh-CN', { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            // 可以在这里更新时间显示
+        }
+        setInterval(updateClock, 1000);
+
+        // 鼠标跟随效果（可选）
+        document.addEventListener('mousemove', (e) => {
+            const cards = document.querySelectorAll('.news-card');
+            cards.forEach(card => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                if (x >= 0 && x <= rect.width && y >= 0 && y <= rect.height) {
+                    card.style.setProperty('--mouse-x', `${x}px`);
+                    card.style.setProperty('--mouse-y', `${y}px`);
+                }
+            });
+        });
+
+        // 添加 CSS 变量用于鼠标效果
+        const style = document.createElement('style');
+        style.textContent = `
+            .news-card::after {
+                content: '';
+                position: absolute;
+                top: var(--mouse-y, 50%);
+                left: var(--mouse-x, 50%);
+                width: 200px;
+                height: 200px;
+                background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+                transform: translate(-50%, -50%);
+                opacity: 0;
+                transition: opacity 0.3s;
+                pointer-events: none;
+            }
+            .news-card:hover::after {
+                opacity: 1;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
